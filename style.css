@@ -14,21 +14,39 @@ body {
 }
 
 h1,
-li {
+.posts>li {
     border-block-end: 1px solid;
     padding-block-end: 1rem;
+    margin-block-end: 1rem;
 }
 
 ul {
     list-style-type: none;
-    margin-block-start: 2rem;
 }
 
-li {
-    margin-block-end: 1rem;
+li li {
+    padding-block-start: 1ch;
+}
 
-    &:last-child {
-        margin-block-end: 2rem;
+button {
+    --blue: #007bff;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+
+    li & {
+        color: var(--blue);
+        background: none;
+        margin-inline-end: 0.5ch;
+    }
+
+    form & {
+        background-color: var(--blue);
+        color: snow;
+        border-radius: 4px;
+        inline-size: max-content;
+        padding: 12px;
     }
 }
 
@@ -36,18 +54,21 @@ form {
     display: flex;
     flex-direction: column;
     row-gap: 1.5rem;
+
+    li & {
+        margin-block-start: 1rem;
+    }
 }
 
 input {
+    font-size: 1rem;
     border: 1px solid;
     border-radius: 4px;
     padding: 12px 8px;
 }
 
-button {
-    inline-size: max-content;
-    cursor: pointer;
-    padding: 8px;
+.hidden {
+    display: none;
 }
 
 .sr-only {
