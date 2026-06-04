@@ -1,0 +1,63 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    display: grid;
+    grid-template-columns: min(500px, 100%);
+    place-content: center;
+    margin: 1rem;
+}
+
+h1,
+li {
+    border-block-end: 1px solid;
+    padding-block-end: 1rem;
+}
+
+ul {
+    list-style-type: none;
+    margin-block-start: 2rem;
+}
+
+li {
+    margin-block-end: 1rem;
+
+    &:last-child {
+        margin-block-end: 2rem;
+    }
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    row-gap: 1.5rem;
+}
+
+input {
+    border: 1px solid;
+    border-radius: 4px;
+    padding: 12px 8px;
+}
+
+button {
+    inline-size: max-content;
+    cursor: pointer;
+    padding: 8px;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
