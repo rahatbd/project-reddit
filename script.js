@@ -1,13 +1,41 @@
 const posts = document.querySelector('.posts');
 const form = document.querySelector('form');
 
-form.addEventListener('submit', event => {
-    event.preventDefault();
+function createCommentForm() {
+    const id = crypto.randomUUID();
 
-    const data = new FormData(form);
-    const text = data.get('text');
-    const name = data.get('name');
+    const commentForm = document.createElement('form');
 
+    const commentTextLabel = document.createElement('label');
+    commentTextLabel.htmlFor = `comment-${id}`;
+    commentTextLabel.classList.add('sr-only');
+    commentTextLabel.textContent = 'Comment';
+
+    const commentText = document.createElement('input');
+    commentText.id = commentTextLabel.htmlFor;
+    commentText.name = 'text';
+    commentText.placeholder = 'Comment Text';
+    commentText.required = true;
+
+    const commentNameLabel = document.createElement('label');
+    commentNameLabel.htmlFor = `name-${id}`;
+    commentNameLabel.classList.add('sr-only');
+    commentNameLabel.textContent = 'Name';
+
+    const commentName = document.createElement('input');
+    commentName.id = commentNameLabel.htmlFor;
+    commentName.name = 'name';
+    commentName.placeholder = 'Your Name';
+    commentName.required = true;
+
+    const commentSubmit = document.createElement('button');
+    commentSubmit.textContent = 'Submit Comment';
+
+    commentForm.append(commentTextLabel, commentText, commentNameLabel, commentName, commentSubmit);
+    return commentForm;
+}
+
+function createPost(text, name) {
     const li = document.createElement('li');
 
     const remove = document.createElement('button');
@@ -19,63 +47,64 @@ form.addEventListener('submit', event => {
     const post = document.createElement('span');
     post.textContent = `${text} - Posted By: ${name}`;
 
-    const commentDiv = document.createElement('div');
-    commentDiv.classList.add('hidden');
+    const commentsDiv = document.createElement('div');
+    commentsDiv.classList.add('hidden');
 
-    const commentList = document.createElement('ul');
+    const commentsList = document.createElement('ul');
 
-    const commentForm = document.createElement('form');
+    const commentForm = createCommentForm();
 
-    const id = crypto.randomUUID();
+    commentsDiv.append(commentsList, commentForm);
+    li.append(remove, comments, post, commentsDiv);
+    return li;
+}
 
-    const commentLabel = document.createElement('label');
-    commentLabel.htmlFor = `comment-${id}`;
-    commentLabel.classList.add('sr-only');
-    commentLabel.textContent = 'Comment Text';
+function createCommentPost(text, name) {
+    const li = document.createElement('li');
+    li.textContent = `${text} - Posted By: ${name}`;
 
-    const comment = document.createElement('input');
-    comment.id = commentLabel.htmlFor;
-    comment.name = 'comment';
-    comment.placeholder = commentLabel.textContent;
-    comment.required = true;
+    const remove = document.createElement('button');
+    remove.textContent = 'remove';
 
-    const nameLabel = document.createElement('label');
-    nameLabel.htmlFor = `name-${id}`;
-    nameLabel.classList.add('sr-only');
-    nameLabel.textContent = 'Your Name';
+    li.prepend(remove);
+    return li;
+}
 
-    const commentName = document.createElement('input');
-    commentName.id = nameLabel.htmlFor;
-    commentName.name = 'comment-name';
-    commentName.placeholder = nameLabel.textContent;
-    commentName.required = true;
+function getFormData(form) {
+    const data = new FormData(form);
+    const text = data.get('text')?.trim();
+    const name = data.get('name')?.trim();
+    return {text, name};
+}
 
-    const commentSubmit = document.createElement('button');
-    commentSubmit.textContent = 'Submit Comment';
+function handlePostClick(event) {
+    const button = event.target.closest('button');
+    if (!button) return;
+    const post = button.closest('li');
+    if (button.textContent === 'remove') return post.remove();
+    if (button.textContent === 'comments') post.querySelector('div').classList.toggle('hidden');
+}
 
-    commentForm.append(commentLabel, comment, nameLabel, commentName, commentSubmit);
-    commentDiv.append(commentList, commentForm);
-
-    remove.addEventListener('click', () => li.remove());
-    comments.addEventListener('click', () => commentDiv.classList.toggle('hidden'));
-
-    commentForm.addEventListener('submit', event => {
-        event.preventDefault();
-        const data = new FormData(commentForm);
-        const comment = data.get('comment');
-        const name = data.get('comment-name');
-        const li = document.createElement('li');
-        li.textContent = `${comment} - Posted By: ${name}`;
-        const remove = document.createElement('button');
-        remove.textContent = 'remove';
-        remove.addEventListener('click', () => li.remove());
-        li.prepend(remove);
-        commentList.append(li);
-        commentForm.reset();
-    });
-
-    li.append(remove, comments, post, commentDiv);
-    posts.append(li);
-
+function handleCommentSubmit(event) {
+    event.preventDefault();
+    const form = event.target;
+    const {text, name} = getFormData(form);
+    if (!text || !name) return alert('Fields cannot be empty.');
+    const comments = form.previousElementSibling;
+    const comment = createCommentPost(text, name);
+    comments.append(comment);
     form.reset();
-});
+}
+
+function handlePostSubmit(event) {
+    event.preventDefault();
+    const {text, name} = getFormData(form);
+    if (!text || !name) return alert('Fields cannot be empty.');
+    const post = createPost(text, name);
+    posts.append(post);
+    form.reset();
+}
+
+posts.addEventListener('click', handlePostClick);
+posts.addEventListener('submit', handleCommentSubmit);
+form.addEventListener('submit', handlePostSubmit);
