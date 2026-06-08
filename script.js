@@ -1,37 +1,34 @@
 const posts = document.querySelector('.posts');
 const form = document.querySelector('form');
 
-function createCommentForm() {
+function createCommentInput(labelText, inputName) {
     const id = crypto.randomUUID();
 
+    const label = document.createElement('label');
+    label.htmlFor = id;
+    label.classList.add('sr-only');
+    label.textContent = labelText;
+
+    const input = document.createElement('input');
+    input.id = id;
+    input.name = inputName;
+    input.placeholder = labelText;
+    input.required = true;
+
+    return {label, input};
+}
+
+function createCommentForm() {
     const commentForm = document.createElement('form');
 
-    const commentTextLabel = document.createElement('label');
-    commentTextLabel.htmlFor = `comment-${id}`;
-    commentTextLabel.classList.add('sr-only');
-    commentTextLabel.textContent = 'Comment';
+    const commentText = createCommentInput('Comment Text', 'text');
 
-    const commentText = document.createElement('input');
-    commentText.id = commentTextLabel.htmlFor;
-    commentText.name = 'text';
-    commentText.placeholder = 'Comment Text';
-    commentText.required = true;
-
-    const commentNameLabel = document.createElement('label');
-    commentNameLabel.htmlFor = `name-${id}`;
-    commentNameLabel.classList.add('sr-only');
-    commentNameLabel.textContent = 'Name';
-
-    const commentName = document.createElement('input');
-    commentName.id = commentNameLabel.htmlFor;
-    commentName.name = 'name';
-    commentName.placeholder = 'Your Name';
-    commentName.required = true;
+    const commentName = createCommentInput('Your Name', 'name');
 
     const commentSubmit = document.createElement('button');
     commentSubmit.textContent = 'Submit Comment';
 
-    commentForm.append(commentTextLabel, commentText, commentNameLabel, commentName, commentSubmit);
+    commentForm.append(commentText.label, commentText.input, commentName.label, commentName.input, commentSubmit);
     return commentForm;
 }
 
